@@ -13,7 +13,7 @@ COMPOSE_FILE="$APP_DIR/docker-compose.yml"
 ENV_FILE="$APP_DIR/.env"
 
 # URL репозитория (ветка docker)
-REPO_RAW_URL="${REPO_RAW_URL:-https://raw.githubusercontent.com/witrixs/witrixdiscordbot/docker}"
+REPO_RAW_URL="${REPO_RAW_URL:-https://raw.githubusercontent.com/witrixs/script/main/witrixdriscordbot}"
 
 colorized_echo() {
     local color=$1

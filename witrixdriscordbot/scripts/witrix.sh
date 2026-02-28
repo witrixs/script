@@ -11,6 +11,10 @@ APP_NAME="${APP_NAME:-witrixdiscordbot}"
 APP_DIR="$INSTALL_DIR/$APP_NAME"
 COMPOSE_FILE="$APP_DIR/docker-compose.yml"
 ENV_FILE="$APP_DIR/.env"
+# Каталог данных для bind mount (docker-compose.deploy.yml: /var/lib/witrixdiscordbot:/app/data)
+DATA_DIR="${DATA_DIR:-/var/lib/witrixdiscordbot}"
+DATA_UID="${DATA_UID:-1000}"
+DATA_GID="${DATA_GID:-1000}"
 
 # URL репозитория (ветка docker)
 REPO_RAW_URL="${REPO_RAW_URL:-https://raw.githubusercontent.com/witrixs/script/main/witrixdriscordbot}"
@@ -98,6 +102,20 @@ ensure_up() {
     fi
 }
 
+# Создать каталог данных для volume /var/lib/witrixdiscordbot:/app/data и выдать права
+ensure_data_dir() {
+    if [ "$(id -u)" -ne 0 ]; then
+        return 0
+    fi
+    if [ ! -d "$DATA_DIR" ]; then
+        colorized_echo blue "Создание каталога данных: $DATA_DIR"
+        mkdir -p "$DATA_DIR"
+        chown -R "$DATA_UID:$DATA_GID" "$DATA_DIR"
+        chmod 775 "$DATA_DIR"
+        colorized_echo green "Каталог создан, владелец $DATA_UID:$DATA_GID."
+    fi
+}
+
 install_command() {
     check_running_as_root
     detect_os
@@ -168,6 +186,8 @@ ENVEOF
         colorized_echo green "Файл .env уже существует."
     fi
 
+    ensure_data_dir
+
     colorized_echo green "Установка завершена. Каталог: $APP_DIR"
     colorized_echo cyan "Дальше: отредактируйте .env (witrixdiscordbot edit-env), затем witrixdiscordbot up"
 }
@@ -175,6 +195,7 @@ ENVEOF
 up_command() {
     ensure_installed
     detect_compose
+    ensure_data_dir
     colorized_echo blue "Запуск контейнеров..."
     $COMPOSE -f "$COMPOSE_FILE" -p "$APP_NAME" up -d
     colorized_echo green "Сервисы запущены. Панель и API: http://<IP>:4000"
@@ -193,6 +214,7 @@ down_command() {
 restart_command() {
     ensure_installed
     detect_compose
+    ensure_data_dir
     down_command
     colorized_echo blue "Запуск контейнеров..."
     $COMPOSE -f "$COMPOSE_FILE" -p "$APP_NAME" up -d

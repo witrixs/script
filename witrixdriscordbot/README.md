@@ -53,7 +53,7 @@ docker compose -f docker-compose.deploy.yml up -d
 Чтобы скачать и установить проект на сервере с Linux, выполните:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/witrixs/witrixdiscordbot/docker/scripts/witrix.sh -o /tmp/witrixdiscordbot.sh \
+curl -fsSL https://raw.githubusercontent.com/witrixs/script/main/witrixdriscordbot/scripts/witrix.sh -o /tmp/witrixdiscordbot.sh \
   && sed -i 's/\r$//' /tmp/witrixdiscordbot.sh \
   && sudo bash /tmp/witrixdiscordbot.sh install \
   && sudo bash /tmp/witrixdiscordbot.sh install-script

@@ -7,7 +7,4 @@ services:
     network_mode: host
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - bot_data:/app/data
-
-volumes:
-  bot_data:
+      - /var/lib/witrixdiscordbot:/app/data

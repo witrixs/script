@@ -132,15 +132,36 @@ install_command() {
     if [ ! -f "$ENV_FILE" ]; then
         colorized_echo blue "Создание .env..."
         cat > "$ENV_FILE" << 'ENVEOF'
-# Discord Bot
-DISCORD_TOKEN=
-# База (PostgreSQL на хосте при network_mode: host — 127.0.0.1)
-DB_URL=postgresql://user:password@127.0.0.1:5432/dbname
-SECRET_KEY=
+## Discord Bot
+DISCORD_TOKEN=your_discord_bot_token
+
+## База данных (SQLite по умолчанию)
+DB_URL=sqlite:///bot.db
+# PostgreSQL пример:
+# DB_URL=postgresql://user:pass@localhost:5432/dbname
+
+## JWT и веб-панель
+SECRET_KEY=replace_me_with_strong_secret
+
+## Редирект после входа (без слеша в конце)
 FRONTEND_URL=http://localhost:4000
-DISCORD_CLIENT_ID=
-DISCORD_CLIENT_SECRET=
+
+## Discord OAuth2 — для входа в панель через Discord
+DISCORD_CLIENT_ID=your_client_id
+DISCORD_CLIENT_SECRET=your_client_secret
+# Полный URL колбэка (как в Discord Developer Portal)
 DISCORD_REDIRECT_URI=http://localhost:4000/api/auth/discord/callback
+
+## Опционально: логин/пароль для веб-панели (вместо или вместе с Discord)
+# ADMIN_USERNAME=admin
+# ADMIN_PASSWORD=your_password
+
+## Опционально: статус бота в Discord
+# BOT_STATUS_TYPE=listening   # playing | listening | watching
+# BOT_STATUS_NAME=ALBLAK 52
+
+## CORS (через запятую, по умолчанию *)
+# CORS_ORIGINS=http://localhost:5173
 ENVEOF
         colorized_echo green "Создан $ENV_FILE — отредактируйте: witrixdiscordbot edit-env"
     else

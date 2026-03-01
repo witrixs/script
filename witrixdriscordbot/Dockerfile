@@ -16,10 +16,11 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Зависимости системы (для psycopg/PostgreSQL при необходимости)
+# Зависимости системы (psycopg, шрифты для отрисовки картинок с кириллицей)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     libpq-dev \
+    fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
 # Python-зависимости
@@ -29,6 +30,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Код приложения
 COPY app/ ./app/
 COPY main.py .
+
+# Папка fonts — шрифты для отрисовки (уровни, карточки). Без неё бот использует системный DejaVu.
+COPY fonts/ ./fonts/
 
 # Собранный фронтенд из первого этапа
 COPY --from=frontend-build /frontend/dist ./frontend/dist
